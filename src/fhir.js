@@ -123,6 +123,7 @@ class FHIRObject {
   constructor(json, typeInfo, modelInfo) {
     // Define "private" un-enumerable properties to hold internal data
     Object.defineProperties(this, {
+      _cache : {value: new Map(), enumerable: false},
       _json: { value: json, enumerable: false },
       _typeInfo: { value: typeInfo, enumerable: false },
       _modelInfo: { value: modelInfo, enumerable: false }
@@ -152,8 +153,16 @@ class FHIRObject {
     }
   }
 
-  // Required by cql-execution API
   get(field) {
+    if (this._cache.has(field)) {
+      return this._cache.get(field);
+    }
+    let ret = this._get(field);
+    this._cache.set(field, ret);
+    return ret;
+  }
+  // Required by cql-execution API
+  _get(field) {
     if (this._json == null) {
       // preserve distinction between null or undefined
       return this._json;
