@@ -496,7 +496,7 @@ function toSystemObject(data, name) {
       return;
     case 'DateTime':
       // CQL DateTime doesn't support 'Z' right now, so account for that.
-      return cql.DateTime.parse(data.replace('Z', '+00:00'));
+      return cql.DateTime.parse(data) != null ? cql.DateTime.parse(data.replace('Z', '+00:00')) : undefined;
     case 'Date':
       // cql-execution v1.3.2 currently doesn't export the new Date class, so we need to use this workaround
       return cql.DateTime.parse(data) != null ? cql.DateTime.parse(data).getDate() : undefined;
